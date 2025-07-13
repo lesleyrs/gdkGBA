@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 #include "gba_bios.h"
 #include <string.h>
         memcpy(bios, gba_bios_bin, sizeof(gba_bios_bin));
-        printf("Loading HLE bios replacement.");
+        printf("Loading HLE bios replacement.\n");
 #else
         printf("Place it on this directory with the name \"gba_bios.bin\".\n");
 
