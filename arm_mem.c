@@ -6,6 +6,26 @@
 #define EEPROM_WRITE  2
 #define EEPROM_READ   3
 
+uint8_t *bios;
+uint8_t *wram;
+uint8_t *iwram;
+uint8_t *pram;
+uint8_t *vram;
+uint8_t *oam;
+uint8_t *rom;
+uint8_t *eeprom;
+uint8_t *sram;
+uint8_t *flash;
+
+uint32_t palette[0x200];
+
+uint32_t bios_op;
+
+int64_t cart_rom_size;
+uint32_t cart_rom_mask;
+
+uint16_t eeprom_idx;
+
 uint32_t flash_bank = 0;
 
 typedef enum {

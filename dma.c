@@ -5,6 +5,11 @@
 #include "io.h"
 #include "sound.h"
 
+uint32_t dma_src_addr[4];
+uint32_t dma_dst_addr[4];
+
+uint32_t dma_count[4];
+
 //TODO: Timing - DMA should take some amount of cycles
 
 void dma_transfer(dma_timing_e timing) {

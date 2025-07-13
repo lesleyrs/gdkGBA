@@ -5,7 +5,7 @@
 #include "arm_mem.h"
 
 #include "io.h"
-#include "sdl.h"
+#include "platform.h"
 #include "video.h"
 
 const int64_t max_rom_sz = 32 * 1024 * 1024;
@@ -41,9 +41,16 @@ int main(int argc, char* argv[]) {
 
     if (image == NULL) {
         printf("Error: GBA BIOS not found!\n");
+#ifdef __wasm
+#include "gba_bios.h"
+#include <string.h>
+        memcpy(bios, gba_bios_bin, sizeof(gba_bios_bin));
+        printf("Loading HLE bios replacement.");
+#else
         printf("Place it on this directory with the name \"gba_bios.bin\".\n");
 
         return 0;
+#endif
     }
 
     fread(bios, 16384, 1, image);
@@ -71,56 +78,57 @@ int main(int argc, char* argv[]) {
 
     fclose(image);
 
-    sdl_init();
+    platform_init();
     arm_reset();
 
     bool run = true;
 
     while (run) {
         run_frame();
+#ifndef __wasm
+     SDL_Event event;
 
-        SDL_Event event;
+     while (SDL_PollEvent(&event)) {
+         switch (event.type) {
+             case SDL_KEYDOWN:
+                 switch (event.key.keysym.sym) {
+                     case SDLK_UP:     key_input.w &= ~BTN_U;   break;
+                     case SDLK_DOWN:   key_input.w &= ~BTN_D;   break;
+                     case SDLK_LEFT:   key_input.w &= ~BTN_L;   break;
+                     case SDLK_RIGHT:  key_input.w &= ~BTN_R;   break;
+                     case SDLK_a:      key_input.w &= ~BTN_A;   break;
+                     case SDLK_s:      key_input.w &= ~BTN_B;   break;
+                     case SDLK_q:      key_input.w &= ~BTN_LT;  break;
+                     case SDLK_w:      key_input.w &= ~BTN_RT;  break;
+                     case SDLK_TAB:    key_input.w &= ~BTN_SEL; break;
+                     case SDLK_RETURN: key_input.w &= ~BTN_STA; break;
+                     default:                                   break;
+                 }
+             break;
 
-        while (SDL_PollEvent(&event)) {
-            switch (event.type) {
-                case SDL_KEYDOWN:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_UP:     key_input.w &= ~BTN_U;   break;
-                        case SDLK_DOWN:   key_input.w &= ~BTN_D;   break;
-                        case SDLK_LEFT:   key_input.w &= ~BTN_L;   break;
-                        case SDLK_RIGHT:  key_input.w &= ~BTN_R;   break;
-                        case SDLK_a:      key_input.w &= ~BTN_A;   break;
-                        case SDLK_s:      key_input.w &= ~BTN_B;   break;
-                        case SDLK_q:      key_input.w &= ~BTN_LT;  break;
-                        case SDLK_w:      key_input.w &= ~BTN_RT;  break;
-                        case SDLK_TAB:    key_input.w &= ~BTN_SEL; break;
-                        case SDLK_RETURN: key_input.w &= ~BTN_STA; break;
-                        default:                                   break;
-                    }
-                break;
+             case SDL_KEYUP:
+                 switch (event.key.keysym.sym) {
+                     case SDLK_UP:     key_input.w |= BTN_U;   break;
+                     case SDLK_DOWN:   key_input.w |= BTN_D;   break;
+                     case SDLK_LEFT:   key_input.w |= BTN_L;   break;
+                     case SDLK_RIGHT:  key_input.w |= BTN_R;   break;
+                     case SDLK_a:      key_input.w |= BTN_A;   break;
+                     case SDLK_s:      key_input.w |= BTN_B;   break;
+                     case SDLK_q:      key_input.w |= BTN_LT;  break;
+                     case SDLK_w:      key_input.w |= BTN_RT;  break;
+                     case SDLK_TAB:    key_input.w |= BTN_SEL; break;
+                     case SDLK_RETURN: key_input.w |= BTN_STA; break;
+                     default:                                  break;
+                 }
+             break;
 
-                case SDL_KEYUP:
-                    switch (event.key.keysym.sym) {
-                        case SDLK_UP:     key_input.w |= BTN_U;   break;
-                        case SDLK_DOWN:   key_input.w |= BTN_D;   break;
-                        case SDLK_LEFT:   key_input.w |= BTN_L;   break;
-                        case SDLK_RIGHT:  key_input.w |= BTN_R;   break;
-                        case SDLK_a:      key_input.w |= BTN_A;   break;
-                        case SDLK_s:      key_input.w |= BTN_B;   break;
-                        case SDLK_q:      key_input.w |= BTN_LT;  break;
-                        case SDLK_w:      key_input.w |= BTN_RT;  break;
-                        case SDLK_TAB:    key_input.w |= BTN_SEL; break;
-                        case SDLK_RETURN: key_input.w |= BTN_STA; break;
-                        default:                                  break;
-                    }
-                break;
-
-                case SDL_QUIT: run = false; break;
-            }
-        }
+             case SDL_QUIT: run = false; break;
+         }
+     }
+#endif
     }
 
-    sdl_uninit();
+    platform_uninit();
     arm_uninit();
 
     return 0;

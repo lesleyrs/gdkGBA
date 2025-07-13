@@ -3,6 +3,18 @@
 #include "io.h"
 #include "sound.h"
 
+int8_t fifo_a[0x20];
+int8_t fifo_b[0x20];
+
+uint8_t fifo_a_len;
+uint8_t fifo_b_len;
+
+snd_ch_state_t snd_ch_state[4];
+
+uint8_t wave_position;
+uint8_t wave_samples;
+
+
 #define PSG_MAX   0x7f
 #define PSG_MIN  -0x80
 

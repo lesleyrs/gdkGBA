@@ -5,6 +5,12 @@
 #include "sound.h"
 #include "timer.h"
 
+uint32_t tmr_icnt[4];
+
+uint8_t tmr_enb;
+uint8_t tmr_irq;
+uint8_t tmr_ie;
+
 static const uint8_t pscale_shift_lut[4]  = { 0, 6, 8, 10 };
 
 void timers_clock(uint32_t cycles) {

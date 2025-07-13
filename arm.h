@@ -1,3 +1,4 @@
+#pragma once
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -100,14 +101,12 @@ typedef struct {
     uint32_t spsr_mon;
 } arm_regs_t;
 
-arm_regs_t arm_r;
-
-uint32_t arm_op;
-uint32_t arm_pipe[2];
-uint32_t arm_cycles;
-
-bool int_halt;
-bool pipe_reload;
+extern arm_regs_t arm_r;
+extern uint32_t arm_op;
+extern uint32_t arm_pipe[2];
+extern uint32_t arm_cycles;
+extern bool int_halt;
+extern bool pipe_reload;
 
 void arm_init();
 void arm_uninit();

@@ -1,4 +1,6 @@
+#pragma once
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef union {
     uint32_t w;
@@ -34,36 +36,11 @@ typedef union {
 #define HBLK_IRQ  (1 <<  4)
 #define VCNT_IRQ  (1 <<  5)
 
-io_reg disp_cnt;
-io_reg green_inv;
-io_reg disp_stat;
-io_reg v_count;
-
 typedef struct {
     io_reg ctrl;
     io_reg xofs;
     io_reg yofs;
 } bg_t;
-
-bg_t bg[4];
-
-io_reg bg_pa[4];
-io_reg bg_pb[4];
-io_reg bg_pc[4];
-io_reg bg_pd[4];
-
-io_reg bg_refxe[4];
-io_reg bg_refye[4];
-
-io_reg bg_refxi[4];
-io_reg bg_refyi[4];
-
-io_reg win_in;
-io_reg win_out;
-
-io_reg bld_cnt;
-io_reg bld_alpha;
-io_reg bld_bright;
 
 #define SWEEP_DEC  (1 <<  3)
 #define ENV_INC    (1 << 11)
@@ -89,10 +66,6 @@ typedef struct {
     io_reg ctrl;
 } snd_noise_ch_t;
 
-snd_sqr_ch_t   sqr_ch[2];
-snd_wave_ch_t  wave_ch;
-snd_noise_ch_t noise_ch;
-
 #define CH_SQR1_R   (1 <<  8)
 #define CH_SQR2_R   (1 <<  9)
 #define CH_WAVE_R   (1 << 10)
@@ -111,31 +84,12 @@ snd_noise_ch_t noise_ch;
 #define CH_NOISE    (1 <<  3)
 #define PSG_ENB     (1 <<  7)
 
-io_reg snd_psg_vol;
-io_reg snd_pcm_vol;
-io_reg snd_psg_enb;
-io_reg snd_bias;
-
-uint8_t wave_ram[0x20];
-
-int8_t snd_fifo_a_0;
-int8_t snd_fifo_a_1;
-int8_t snd_fifo_a_2;
-int8_t snd_fifo_a_3;
-
-int8_t snd_fifo_b_0;
-int8_t snd_fifo_b_1;
-int8_t snd_fifo_b_2;
-int8_t snd_fifo_b_3;
-
 typedef struct {
     io_reg src;
     io_reg dst;
     io_reg count;
     io_reg ctrl;
 } dma_ch_t;
-
-dma_ch_t dma_ch[4];
 
 #define BTN_A    (1 << 0)
 #define BTN_B    (1 << 1)
@@ -154,32 +108,61 @@ typedef struct {
     io_reg ctrl;
 } tmr_t;
 
-tmr_t tmr[4];
+extern bg_t bg[4];
+extern io_reg bg_pa[4];
+extern io_reg bg_pb[4];
+extern io_reg bg_pc[4];
+extern io_reg bg_pd[4];
+extern io_reg bg_refxe[4];
+extern io_reg bg_refye[4];
+extern io_reg bg_refxi[4];
+extern io_reg bg_refyi[4];
+extern io_reg win_in;
+extern io_reg win_out;
+extern io_reg bld_cnt;
+extern io_reg bld_alpha;
+extern io_reg bld_bright;
+extern snd_sqr_ch_t   sqr_ch[2];
+extern snd_wave_ch_t  wave_ch;
+extern snd_noise_ch_t noise_ch;
+extern io_reg snd_psg_vol;
+extern io_reg snd_pcm_vol;
+extern io_reg snd_psg_enb;
+extern io_reg snd_bias;
+extern uint8_t wave_ram[0x20];
+extern int8_t snd_fifo_a_0;
+extern int8_t snd_fifo_a_1;
+extern int8_t snd_fifo_a_2;
+extern int8_t snd_fifo_a_3;
+extern int8_t snd_fifo_b_0;
+extern int8_t snd_fifo_b_1;
+extern int8_t snd_fifo_b_2;
+extern int8_t snd_fifo_b_3;
+extern tmr_t tmr[4];
+extern io_reg r_cnt;
+extern io_reg sio_cnt;
+extern io_reg sio_data8;
+extern io_reg sio_data32;
+extern io_reg key_input;
+extern io_reg int_enb;
+extern io_reg int_ack;
+extern io_reg wait_cnt;
+extern io_reg int_enb_m;
+extern uint8_t ws_n[4];
+extern uint8_t ws_s[4];
+extern uint8_t ws_n_arm[4];
+extern uint8_t ws_s_arm[4];
+extern uint8_t ws_n_t16[4];
+extern uint8_t ws_s_t16[4];
+extern uint8_t post_boot;
+extern bool io_open_bus;
+extern io_reg disp_cnt;
+extern io_reg green_inv;
+extern io_reg disp_stat;
+extern io_reg v_count;
 
-io_reg r_cnt;
-io_reg sio_cnt;
-io_reg sio_data8;
-io_reg sio_data32;
+extern dma_ch_t dma_ch[4];
 
-io_reg key_input;
-
-io_reg int_enb;
-io_reg int_ack;
-io_reg wait_cnt;
-io_reg int_enb_m;
-
-uint8_t ws_n[4];
-uint8_t ws_s[4];
-
-uint8_t ws_n_arm[4];
-uint8_t ws_s_arm[4];
-
-uint8_t ws_n_t16[4];
-uint8_t ws_s_t16[4];
-
-uint8_t post_boot;
-
-bool io_open_bus;
 
 uint8_t io_read(uint32_t address);
 

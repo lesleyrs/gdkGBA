@@ -3,7 +3,7 @@
 
 #include "dma.h"
 #include "io.h"
-#include "sdl.h"
+#include "platform.h"
 #include "sound.h"
 
 #define LINES_VISIBLE  160
@@ -340,7 +340,7 @@ static void render_line() {
     }
 
     if ((disp_cnt.w & 7) > 2) {
-        render_bg(0);
+        render_bg();
         render_obj(0);
         render_obj(1);
         render_obj(2);
@@ -371,7 +371,9 @@ static void vcount_match() {
 void run_frame() {
     disp_stat.w &= ~VBLK_FLAG;
 
+    #ifndef __wasm
     SDL_LockTexture(texture, NULL, &screen, &tex_pitch);
+    #endif
 
     for (v_count.w = 0; v_count.w < LINES_TOTAL; v_count.w++) {
         disp_stat.w &= ~(HBLK_FLAG | VCNT_FLAG);
@@ -405,9 +407,23 @@ void run_frame() {
         sound_clock(CYC_LINE_TOTAL);
     }
 
+#ifndef __wasm
     SDL_UnlockTexture(texture);
     SDL_RenderCopy(renderer, texture, NULL, NULL);
     SDL_RenderPresent(renderer);
+#else
+#include <stddef.h>
+#include <js/glue.h>
+    for (size_t i = 0; i < 240 * 160; i++) {
+        uint32_t pixel = ((uint32_t*)screen)[i];
+        // argb to rgba
+        pixel = ((pixel >> 8) & 0x00FFFFFF) | (pixel << 24);
+        ((uint32_t*)screen)[i] = pixel;
+    }
+    JS_setPixelsAlpha(screen);
+    // JS_setTimeout(16);
+    JS_requestAnimationFrame();
+#endif
 
     sound_buffer_wrap();
 }

@@ -5,6 +5,83 @@
 #include "sound.h"
 #include "timer.h"
 
+bg_t bg[4];
+
+io_reg bg_pa[4];
+io_reg bg_pb[4];
+io_reg bg_pc[4];
+io_reg bg_pd[4];
+
+io_reg bg_refxe[4];
+io_reg bg_refye[4];
+
+io_reg bg_refxi[4];
+io_reg bg_refyi[4];
+
+io_reg win_in;
+io_reg win_out;
+
+io_reg bld_cnt;
+io_reg bld_alpha;
+io_reg bld_bright;
+
+snd_sqr_ch_t   sqr_ch[2];
+snd_wave_ch_t  wave_ch;
+snd_noise_ch_t noise_ch;
+
+io_reg snd_psg_vol;
+io_reg snd_pcm_vol;
+io_reg snd_psg_enb;
+io_reg snd_bias;
+
+uint8_t wave_ram[0x20];
+
+int8_t snd_fifo_a_0;
+int8_t snd_fifo_a_1;
+int8_t snd_fifo_a_2;
+int8_t snd_fifo_a_3;
+
+int8_t snd_fifo_b_0;
+int8_t snd_fifo_b_1;
+int8_t snd_fifo_b_2;
+int8_t snd_fifo_b_3;
+
+tmr_t tmr[4];
+
+io_reg r_cnt;
+io_reg sio_cnt;
+io_reg sio_data8;
+io_reg sio_data32;
+
+io_reg key_input;
+
+io_reg int_enb;
+io_reg int_ack;
+io_reg wait_cnt;
+io_reg int_enb_m;
+
+uint8_t ws_n[4];
+uint8_t ws_s[4];
+
+uint8_t ws_n_arm[4];
+uint8_t ws_s_arm[4];
+
+uint8_t ws_n_t16[4];
+uint8_t ws_s_t16[4];
+
+uint8_t post_boot;
+
+bool io_open_bus;
+
+io_reg disp_cnt;
+io_reg green_inv;
+io_reg disp_stat;
+io_reg v_count;
+dma_ch_t dma_ch[4];
+
+
+
+
 uint8_t io_read(uint32_t address) {
     io_open_bus = false;
 

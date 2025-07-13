@@ -10,6 +10,15 @@
  * Utils
  */
 
+arm_regs_t arm_r;
+
+uint32_t arm_op;
+uint32_t arm_pipe[2];
+uint32_t arm_cycles;
+
+bool int_halt;
+bool pipe_reload;
+
 static void arm_flag_set(uint32_t flag, bool cond) {
     if (cond)
         arm_r.cpsr |= flag;

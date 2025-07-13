@@ -1,7 +1,14 @@
-#include "sdl.h"
+#ifndef __wasm
+#include "platform.h"
 #include "sound.h"
 
-void sdl_init() {
+SDL_Window *window;
+SDL_Renderer *renderer;
+SDL_Texture *texture;
+
+int32_t tex_pitch;
+
+void platform_init() {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
     window   = SDL_CreateWindow("gdkGBA", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 480, 320, 0);
@@ -28,7 +35,7 @@ void sdl_init() {
     SDL_PauseAudio(0);
 }
 
-void sdl_uninit() {
+void platform_uninit() {
     SDL_DestroyTexture(texture);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
@@ -36,3 +43,4 @@ void sdl_uninit() {
     SDL_CloseAudio();
     SDL_Quit();
 }
+#endif
