@@ -81,14 +81,12 @@ int main(int argc, char* argv[]) {
         }
 
         int len;
-        char* str = NULL;
-        uint8_t *file = JS_openFilePicker(&len, &str);
+        uint8_t *file = JS_openFilePicker(&len, NULL);
         cart_rom_size = len;
         cart_rom_mask = to_pow2(cart_rom_size) - 1;
         if (cart_rom_size > max_rom_sz) cart_rom_size = max_rom_sz;
         memcpy(rom, file, cart_rom_size);
         free(file);
-        free(str);
         goto init;
     }
 #endif
