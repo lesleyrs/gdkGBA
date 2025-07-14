@@ -32,7 +32,9 @@ int main(int argc, char* argv[]) {
         printf("Error: Invalid number of arguments!\n");
         printf("Please specify a ROM file.\n");
 
+#ifndef __wasm
         return 0;
+#endif
     }
 
     FILE *image;
@@ -45,7 +47,7 @@ int main(int argc, char* argv[]) {
 #include "gba_bios.h"
 #include <string.h>
         memcpy(bios, gba_bios_bin, sizeof(gba_bios_bin));
-        printf("Loading HLE bios replacement.\n");
+        printf("Loading HLE BIOS replacement.\n");
 #else
         printf("Place it on this directory with the name \"gba_bios.bin\".\n");
 
@@ -57,6 +59,35 @@ int main(int argc, char* argv[]) {
 
     fclose(image);
 
+#ifdef __wasm
+#include <js/glue.h>
+    if (argc < 2) {
+        platform_init();
+        JS_setFont("bold 13px Roboto");
+        JS_fillStyle("white");
+        const char *text[] = {
+            "Error: Invalid number of arguments!\n",
+            "Please specify a ROM file.\n",
+            "Click to browse...",
+        };
+
+        int y = 160 / 3;
+        int y_step = 64;
+
+        for (int i = 0; i < 3; i++) {
+            JS_fillText(text[i], (240 - JS_measureTextWidth(text[i])) / 2, (y + i * y_step) / 2);
+        }
+
+        int len;
+        uint8_t *file = JS_openFilePicker(&len);
+        cart_rom_size = len;
+        cart_rom_mask = to_pow2(cart_rom_size) - 1;
+        if (cart_rom_size > max_rom_sz) cart_rom_size = max_rom_sz;
+        memcpy(rom, file, cart_rom_size);
+        free(file);
+        goto init;
+    }
+#endif
     image = fopen(argv[1], "rb");
 
     if (image == NULL) {
@@ -79,6 +110,7 @@ int main(int argc, char* argv[]) {
     fclose(image);
 
     platform_init();
+init:
     arm_reset();
 
     bool run = true;
