@@ -68,23 +68,27 @@ int main(int argc, char* argv[]) {
         const char *text[] = {
             "Error: Invalid number of arguments!\n",
             "Please specify a ROM file.\n",
+            "(.gba)",
             "Click to browse...",
         };
 
-        int y = 160 / 3;
+        int count = sizeof(text) / sizeof(text[0]);
+        int y = 160 / count;
         int y_step = 64;
 
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < count; i++) {
             JS_fillText(text[i], (240 - JS_measureTextWidth(text[i])) / 2, (y + i * y_step) / 2);
         }
 
         int len;
-        uint8_t *file = JS_openFilePicker(&len);
+        char* str = NULL;
+        uint8_t *file = JS_openFilePicker(&len, &str);
         cart_rom_size = len;
         cart_rom_mask = to_pow2(cart_rom_size) - 1;
         if (cart_rom_size > max_rom_sz) cart_rom_size = max_rom_sz;
         memcpy(rom, file, cart_rom_size);
         free(file);
+        free(str);
         goto init;
     }
 #endif
