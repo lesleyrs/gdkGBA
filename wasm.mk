@@ -1,7 +1,7 @@
 TARGET = gdkGBA.wasm
 CC=clang --target=wasm32 --sysroot=../../wasmlite/libc -nodefaultlibs
 CFLAGS = -std=c99 -Wall
-LDFLAGS = -Wl,--allow-undefined -Wl,--export-table -Wl,--export=malloc
+LDFLAGS = -Wl,--export-table -Wl,--export=malloc
 
 ifeq ($(DEBUG),0)
 CFLAGS += -Oz -ffast-math -flto
