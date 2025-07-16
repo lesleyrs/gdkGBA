@@ -87,8 +87,7 @@ int main(int argc, char* argv[]) {
         if (cart_rom_size > max_rom_sz) cart_rom_size = max_rom_sz;
         memcpy(rom, file, cart_rom_size);
         free(file);
-        goto init;
-    }
+    } else {
 #endif
     image = fopen(argv[1], "rb");
 
@@ -112,7 +111,9 @@ int main(int argc, char* argv[]) {
     fclose(image);
 
     platform_init();
-init:
+#ifdef __wasm
+    }
+#endif
     arm_reset();
 
     bool run = true;
