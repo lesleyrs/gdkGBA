@@ -80,8 +80,8 @@ int main(int argc, char* argv[]) {
             JS_fillText(text[i], (240 - JS_measureTextWidth(text[i])) / 2, (y + i * y_step) / 2);
         }
 
-        int len;
-        uint8_t *file = JS_openFilePicker(&len, NULL);
+        size_t len;
+        uint8_t *file = JS_openFilePicker(NULL, &len, ".gba");
         cart_rom_size = len;
         cart_rom_mask = to_pow2(cart_rom_size) - 1;
         if (cart_rom_size > max_rom_sz) cart_rom_size = max_rom_sz;
