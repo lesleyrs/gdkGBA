@@ -49,7 +49,7 @@ static bool onkey(void *user_data, bool pressed, int key, int code, int modifier
 }
 
 void platform_init() {
-    JS_createCanvas(240, 160);
+    JS_createCanvas(240, 160, "2d");
     JS_setTitle("gdkGBA");
     JS_addKeyEventListener(NULL, onkey);
     screen = malloc(240 * 160 * 4);
